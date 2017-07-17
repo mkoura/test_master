@@ -13,6 +13,7 @@ Usage
     ./test_master.py -i /path/to/report.html -o /path/to/report.csv
 
 or
+
 .. code-block::
 
     ./test_master.py -i {artifactor_report_url} -o /path/to/report.csv --user {kerberos_user} --password {kerberos_password}
