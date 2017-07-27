@@ -1,8 +1,9 @@
 #!/usr/bin/env python
+
 # -*- coding: utf-8 -*-
 # pylint: disable=logging-format-interpolation
 """
-Reads report.html and produces csv file with summary.
+Reads Ostriz report.html and produces a CSV file with summary.
 """
 
 from __future__ import unicode_literals, absolute_import
@@ -19,10 +20,9 @@ import sys
 
 from collections import Counter
 
-import requests
-
 from bs4 import BeautifulSoup
 
+import requests
 # requests package backwards compatibility mess
 # pylint: disable=import-error,ungrouped-imports
 from requests.packages.urllib3.exceptions import InsecureRequestWarning as IRWrequests
@@ -36,10 +36,7 @@ except ImportError:
     pass
 
 
-# pylint: disable=invalid-name
-logger = logging.getLogger(__name__)
-
-
+# pylint: disable=too-few-public-methods
 class UnicodeWriter(object):
     """A CSV writer that writes rows to CSV file "f" encoded in the given encoding"""
 
@@ -62,11 +59,6 @@ class UnicodeWriter(object):
         self.stream.write(data)
         # empty queue
         self.queue.truncate(0)
-
-    def writerows(self, rows):
-        """writerows implementation using unicode writerow"""
-        for row in rows:
-            self.writerow(row)
 
 
 # pylint: disable=too-few-public-methods
@@ -198,4 +190,6 @@ def main(args=None):
 
 
 if __name__ == '__main__':
+    # pylint: disable=invalid-name
+    logger = logging.getLogger()
     sys.exit(main())

@@ -3,20 +3,48 @@ test_master
 
 Meant for use by CFME QE.
 
-Generates CSV file with error counts and details out of the Artifactor report.html
+### ostriz2csv.py ###
+
+Generates a CSV file with error counts and details out of the Artifactor report.html
+
+### junit2tracebacks.py ###
+
+Generates a file with all tracebacks and a directory with one traceback per file out of the junit-report.xml
+All tracebacks in single file are useful for quick search of all instances of particular error, whereas one traceback per file is useful for greping, sorting and listing errors for particular test cases.
 
 Usage
 -----
 
 .. code-block::
 
-    ./test_master.py -i /path/to/report.html -o /path/to/report.csv
+    ./ostriz2csv.py -i /path/to/report.html -o /path/to/report.csv
 
 or
 
 .. code-block::
 
-    ./test_master.py -i {artifactor_report_url} -o /path/to/report.csv --user {kerberos_user} --password {kerberos_password}
+    ./ostriz2csv.py -i {artifactor_report_url} -o /path/to/report.csv --user {kerberos_user} --password {kerberos_password}
+
+.. code-block::
+
+    ./junit2tracebacks.py -i /path/to/junit-report.xml -f /path/to/all_tracebacks_output.txt -d /path/to/dir_for_one_traceback_per_file
+
+or
+
+.. code-block::
+
+    ./junit2tracebacks.py -i {junit_report_url} -f /path/to/all_tracebacks_output.txt -d /path/to/dir_for_one_traceback_per_file --user {kerberos_user} --password {kerberos_password}
+
+Examples
+--------
+
+.. code-block::
+
+    $ cd /path/to/dir_for_one_traceback_per_file
+    # test cases names with NoSuchElementException
+    $ grep -E -l 'E \*NoSuchElementException:' \*
+    # NoSuchElementExceptions sort by their frequency
+    $ grep -E -h 'E \*NoSuchElementException:' \* | uniq -c | sort -n -r
 
 Install
 -------
