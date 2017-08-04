@@ -74,6 +74,16 @@ def _get_xml_root(xml):
         raise Exception('Failed to parse XML file: {}'.format(err))
 
 
+def _get_polarion_name(classname, title):
+    """Gets Polarion test case name."""
+    last_comp = classname.split('.')[-1]
+    if last_comp[0].isupper():
+        polarion_name = '{0}.{1}'.format(last_comp, title)
+    else:
+        polarion_name = title
+    return polarion_name
+
+
 def _get_tracebacks(xml_root):
     for test_data in xml_root:
         if test_data.tag != 'testcase':
@@ -88,7 +98,7 @@ def _get_tracebacks(xml_root):
         if traceback:
             title = test_data.get('name')
             classname = test_data.get('classname')
-            yield ('{0}.{1}'.format(classname, title), traceback)
+            yield (classname, title, traceback)
 
 
 def _get_unicode_str(obj):
@@ -100,7 +110,7 @@ def _get_unicode_str(obj):
 
 
 def _get_test_file(output_dir, test_name):
-    return os.path.join(output_dir, test_name.replace('.', '_').replace('/', '_'))
+    return os.path.join(output_dir, test_name.replace('/', '_'))
 
 
 def _output_test_data(name, fail, output_desc):
@@ -113,7 +123,8 @@ def _write_tracebacks(xml, output_file, output_dir):
     xml_root = _get_xml_root(xml)
     tracebacks_gen = _get_tracebacks(xml_root)
     with io.open(output_file, 'w', encoding='utf-8') as output_single:
-        for name, fail in tracebacks_gen:
+        for classname, title, fail in tracebacks_gen:
+            name = '{0}.{1}'.format(classname, title)
             name, fail = _get_unicode_str(name), _get_unicode_str(fail)
 
             # write to file with all test cases
@@ -121,7 +132,9 @@ def _write_tracebacks(xml, output_file, output_dir):
             output_single.write('\n\n')
 
             # write to single file for test case
-            with io.open(_get_test_file(output_dir, name), 'w', encoding='utf-8') as output_multi:
+            polarion_name = _get_polarion_name(classname, title)
+            test_file = _get_test_file(output_dir, polarion_name)
+            with io.open(test_file, 'w', encoding='utf-8') as output_multi:
                 _output_test_data(name, fail, output_multi)
 
 
