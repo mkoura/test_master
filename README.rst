@@ -1,5 +1,5 @@
 ===========
-test_master
+Moved to https://gitlab.com/mkourim/test_master
 ===========
 
 Meant for use by CFME QE.
